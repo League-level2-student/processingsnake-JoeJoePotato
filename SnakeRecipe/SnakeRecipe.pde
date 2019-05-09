@@ -6,20 +6,26 @@
 class Segment {
 
   //2. Create x and y member variables to hold the location of each segment.
-int x;
-int y;
+  int x;
+  int y;
   // 3. Add a constructor with parameters to initialize each variable.
-void setX(int x){
- this.x=x; 
-}
-void setY(int y){
- this.y=y; 
-}
+  void setX(int x) {
+    this.x=x;
+  }
+  void setY(int y) {
+    this.y=y;
+  }
+  int getX() {
+    return x;
+  }
+  int getY() {
+    return y;
+  }
 
-Segment(int x, int y){
-this.x=x;
-this.y=y;
-}
+  Segment(int x, int y) {
+    this.x=x;
+    this.y=y;
+  }
 } // 4. Add getter and setter methods for both the x and y member variables.
 
 
@@ -31,6 +37,10 @@ Segment head;
 
 // 6. Create and initialize a String to hold the direction of your snake e.g. "up"
 String directions="up";
+boolean u=true;
+boolean l=true;
+boolean r=true;
+boolean d=false;
 
 
 // 7. Create and initialize a variable to hold how many pieces of food the snake has eaten.
@@ -42,8 +52,8 @@ int foodeaten=1;
 
 // (Hint: use the random method to set both the x and y to random locations within the screen size (500 by 500).)
 
-int foodX = ((int)random(50)*10);
-int foody = ((int)random(50)*10);
+int foodX = ((int)random(50))*10;
+int foodY = ((int)random(50))*10;
 
 
 
@@ -56,9 +66,9 @@ void setup() {
 
   // 10. initialize your head to a new segment.
 
-head=new Segment();
+  head=new Segment(250, 250);
   // 11. Use the frameRate(int rate) method to set the rate to 20.
-frameRate(20);
+  frameRate(20);
 }
 
 
@@ -68,25 +78,25 @@ void draw() {
 
 
   //12. Call the manageTail, drawFood, drawSnake, move, and collision methods.
-manageTail();
-drawFood();
-drawSnake();
-move();
-collision();
+  manageTail();
+  drawFood();
+  drawSnake();
+  move();
+  collision();
 }
 
 
 // 13. Complete the drawFood method below. (Hint: each piece of food should be a 10 by 10 rectangle).
 
 void drawFood() {
-rect(foodX,foody,10,10);
+  rect(foodX, foodY, 10, 10);
 }
 
 
 //14. Draw the snake head (use a 10 by 10 rectangle)
 
 void drawSnake() {
-rect(head.getX(),,10,10);
+  rect(head.getX(), head.getY(), 10, 10);
 
   //test your code
 }
@@ -98,31 +108,64 @@ void move() {
 
   // 16. Using a switch statement, make your snake head move by 10 pixels in the correct direction.
   //This is an incomplete switch statement:
-  /*
-  switch(dir) {
+
+  switch(directions) {
   case "up":
-    // move head up here 
+    // move head up here
+    head.setY(head.getY()-10);
     break;
   case "down":
     // move head down here 
+    head.setY(head.getY()+10);
     break;
   case "left":
-   // figure it out 
+    // figure it out 
+    head.setX(head.getX()+10);
     break;
   case "right":
     // mystery code goes here 
+    head.setX(head.getX()-10);
     break;
   }
-  */
+
 
 
   // 17. Call the checkBoundaries method to make sure the snake head doesn't go off the screen.
+  checkBoundaries();
 }
 
 
 // 18. Complete the keyPressed method below. Use if statements to set your direction variable depending on what key is pressed.
 
 void keyPressed() {
+  if (keyCode==38 && u==true) {
+    directions="up";
+    u=true;
+    l=true;
+    r=true;
+    d=false;
+  } 
+  if (keyCode==39 && l==true) {
+    directions="left";
+    u=true;
+    l=true;
+    r=false;
+    d=true;
+  } 
+  if (keyCode==40 && d==true) {
+    directions="down";
+    u=false;
+    l=true;
+    r=true;
+    d=true;
+  } 
+  if (keyCode==37 && r==true) {
+    directions="right";
+    u=true;
+    l=false;
+    r=true;
+    d=true;
+  }
 }
 
 
@@ -130,6 +173,18 @@ void keyPressed() {
 // 19. check if your head is out of bounds (teleport your snake head to the other side).
 
 void checkBoundaries() {
+  if (head.getX()<0) {
+    head.setX(455);
+  }
+  if (head.getX()>500) {
+    head.setX(5);
+  }
+  if (head.getY()<0) {
+    head.setY(455);
+  }
+  if (head.getY()>500) {
+    head.setY(5);
+  }
 }
 
 
@@ -143,7 +198,15 @@ void checkBoundaries() {
 void collision() {
 
   // If the segment is colliding with a piece of food...
-     // Increase the amount of food eaten and set foodX and foodY to new random locations.
+  // Increase the amount of food eaten and set foodX and foodY to new random locations.
+  if (head.getX()==foodX) {
+    if (head.getY()==foodY) {
+
+      foodX = ((int)random(50))*10;
+      foodY = ((int)random(50))*10;
+      foodeaten+=1;
+    }
+  }
 }
 
 
@@ -167,11 +230,10 @@ void manageTail() {
 
   // To keep your tail the right length:
   // while the tail size is greater than the number of food pieces eaten, remove the first Segment in your tail.
-
 }
 
 void drawTail() {
-    // Draw a 10 by 10 rectangle for each Segment in your snake ArrayList.
+  // Draw a 10 by 10 rectangle for each Segment in your snake ArrayList.
 }
 
 
